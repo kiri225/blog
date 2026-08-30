@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.Config import SECRET_KEY, CORS_ORIGINS
 from app.api.router import api_router
 from app.Database import init_db
-from app.common import register_exception_handlers
+from app.common.ExceptionHub import register_exception_handlers
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

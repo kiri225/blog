@@ -3,7 +3,7 @@ from fastapi.routing import APIRouter
 from sqlmodel import Session
 
 from app.Deps import get_session, get_current_user
-from app.common import Result
+from app.common.Result import Result
 from app.schemas.AuthSchemas import LoginRequest, LoginResponse, UserResponse, UpdateUserInfoRequest
 from app.service import AuthService as auth_service
 

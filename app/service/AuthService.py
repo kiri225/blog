@@ -2,8 +2,8 @@ from datetime import datetime, timedelta, timezone
 from fastapi import HTTPException
 from sqlmodel import Session, select
 from app.Config import ACCESS_TOKEN_EXPIRE_HOURS
-from app.common import Result
-from app.models import User
+from app.common.Result import Result
+from app.models.User import User
 from app.schemas.AuthSchemas import LoginResponse, UserResponse, UpdateUserInfoRequest
 from app.utils.JWTUtils import create_token, verify_password
 

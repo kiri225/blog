@@ -1,6 +1,11 @@
 from sqlmodel import SQLModel, create_engine, Session
 from app.Config import DATABASE_URL
-import app.models  # 触发 __init__ 导入，把各表登记进 metadata
+# 导入各表，把映射登记进 SQLModel.metadata，create_all 才能建出表
+from app.models.User import User
+from app.models.Category import Category
+from app.models.Tag import Tag
+from app.models.Post import Post
+from app.models.PostTag import PostTag
 
 # 创建数据库引擎
 engine = create_engine(DATABASE_URL, echo=False, pool_pre_ping=True)
