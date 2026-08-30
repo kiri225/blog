@@ -16,7 +16,11 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_HOURS = 72
 
 # 允许跨域的前端来源，逗号分隔后拆成 list
-CORS_ORIGINS = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:5173,https://boke.hiromu.top").split(",")
+_cors = os.getenv(
+    "CORS_ORIGINS",
+    "http://localhost:3000,http://127.0.0.1:3000,http://localhost:8848,http://127.0.0.1:8848,http://localhost:5173",
+)
+CORS_ORIGINS = [o.strip() for o in _cors.split(",") if o.strip()]
 
 # GitHub OAuth（访客登录；未配置时为空字符串，相关接口不可用）
 GITHUB_CLIENT_ID = os.environ.get("GITHUB_CLIENT_ID", "")

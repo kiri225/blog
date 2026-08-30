@@ -50,4 +50,4 @@ async def health_check():
 # 获取路由
 @app.get("/api/routes")
 async def get_routes():
-    return {"code": 0, "message": "success", "data": []}
+    return {"code": 200, "message": "success", "data": []}

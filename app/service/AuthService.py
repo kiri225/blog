@@ -17,7 +17,7 @@ def login(session: Session, username: str, password: str) -> Result:
         password: 密码。
 
     Returns:
-        统一结果集。成功时 code=0，data 为 LoginResponse。
+        统一结果集。成功时 code=200，data 为 LoginResponse。
     """
     # 1.查询账号
     user = session.exec(select(User).where(User.username == username)).first()
@@ -61,7 +61,7 @@ def get_user_info(session: Session, username: str) -> Result:
         username: JWT payload 的 sub。
 
     Returns:
-        统一结果集。成功时 code=0，data 为 UserResponse。
+        统一结果集。成功时 code=200，data 为 UserResponse。
     """
     # 1.查询用户
     user_info = session.exec(select(User).where(User.username == username)).first()
@@ -100,7 +100,7 @@ def update_user_info(session: Session, username: str, data: UpdateUserInfoReques
         data: 要更新的字段，未传的键不改。
 
     Returns:
-        统一结果集。成功时 code=0，message 为「更新成功」。
+        统一结果集。成功时 code=200，message 为「更新成功」。
     """
     # 1.查询用户
     user_info = session.exec(select(User).where(User.username == username)).first()

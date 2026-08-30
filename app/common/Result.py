@@ -7,7 +7,7 @@ from pydantic import BaseModel
 T = TypeVar("T")  
 
 class Result(BaseModel, Generic[T]):
-    """统一响应：业务状态码 + 说明 + 数据。code=0 表示成功。"""
+    """统一响应：业务状态码 + 说明 + 数据。code=200 表示成功。"""
 
     code: int = 200  # 业务状态码
     message: str = "success"  # 说明

@@ -23,7 +23,7 @@ def login(LoginReq: LoginRequest, session: Session = Depends(get_session)):
         session: 数据库会话，由依赖注入提供。
 
     Returns:
-        统一结果集。成功时 code=0，data 为 LoginResponse
+        统一结果集。成功时 code=200，data 为 LoginResponse
         （accessToken、expires、用户信息、roles、permissions）。
     """
     return auth_service.login(session, LoginReq.username, LoginReq.password)
@@ -40,7 +40,7 @@ def me(user: dict = Depends(get_current_user), session: Session = Depends(get_se
         session: 数据库会话，由依赖注入提供。
 
     Returns:
-        统一结果集。成功时 code=0，data 为 UserResponse。
+        统一结果集。成功时 code=200，data 为 UserResponse。
     """
     return auth_service.get_user_info(session, user.get("sub"))
 
@@ -62,6 +62,6 @@ def update_me(
         session: 数据库会话，由依赖注入提供。
 
     Returns:
-        统一结果集。成功时 code=0，message 为「更新成功」。
+        统一结果集。成功时 code=200，message 为「更新成功」。
     """
     return auth_service.update_user_info(session, user.get("sub"), UpdateUserInfoReq)
