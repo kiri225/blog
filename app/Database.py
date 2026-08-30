@@ -1,5 +1,5 @@
 from sqlmodel import SQLModel, create_engine, Session
-from app.config import DATABASE_URL
+from app.Config import DATABASE_URL
 import app.models  # 触发 __init__ 导入，把各表登记进 metadata
 
 # 创建数据库引擎

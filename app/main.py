@@ -3,9 +3,10 @@ from pathlib import Path
 from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.config import SECRET_KEY, CORS_ORIGINS
+from app.Config import SECRET_KEY, CORS_ORIGINS
 from app.api.router import api_router
-from app.database import init_db
+from app.Database import init_db
+from app.common import register_exception_handlers
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -14,8 +15,9 @@ async def lifespan(app: FastAPI):
     yield
 
 
-# 创建 FastAPI 应用
+# 创建 FastAPI 应用（docs 地址是 /docs）
 app = FastAPI(title="kiri blog backend", version="0.1.0", lifespan=lifespan)
+register_exception_handlers(app)
 
 # 挂载路由
 app.include_router(api_router)

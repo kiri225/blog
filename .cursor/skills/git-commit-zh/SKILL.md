@@ -45,7 +45,7 @@ description: >-
 <type>(<scope>): <中文简述>
 ```
 
-- `type` 用英文小写；`scope` 可选，用英文模块名（如 `auth`、`config`、`docs`）。
+- `type` 用英文小写；`scope` 可选，用英文模块名（如 `AuthRouter.py`、`Config.py`、`docs`）。
 - 简述用中文，不超过约 50 字，说「为什么 / 结果」，不要堆文件清单。
 - 动词约定：`feat` 用「新增」，`fix` 用「修复」，`docs` 用「补充/更正」，`refactor` 用「重构」，`chore` 用「调整」。
 - 正文可选：空一行后写中文说明（1–3 句）。只写需要解释的动机，不要复述 diff。

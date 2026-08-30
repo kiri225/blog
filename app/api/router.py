@@ -1,4 +1,7 @@
 from fastapi import APIRouter
 
-# 创建 API 路由器
 api_router = APIRouter()
+
+from app.api.AuthRouter import router as auth_router
+
+api_router.include_router(auth_router)

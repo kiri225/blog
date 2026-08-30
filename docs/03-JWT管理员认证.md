@@ -1,6 +1,6 @@
 # 03 — JWT 管理员认证
 
-对照源码：`app/utils/auth.py`、`app/api/auth.py`、`app/schemas/auth.py`、`app/deps.py`
+对照源码：`../app/utils/JWTUtils.py`、`../app/api/AuthRouter.py`、`../app/schemas/AuthSchemas.py`、`../app/Deps.py`
 
 前置：库里已有管理员账号。
 
@@ -18,12 +18,12 @@
 
 ## 任务清单
 
-- [ ] `app/utils/auth.py`：hash / verify / create_token / decode_token / get_current_user
-- [ ] `app/schemas/auth.py`：`LoginRequest`、`Token`（Token 可留着不用）
-- [ ] `app/deps.py` 导出 `get_session`、`get_current_user`
-- [ ] `app/api/auth.py`：login / me / update_me
-- [ ] 在 `router.py` 注册 `auth_router`
-- [ ] Swagger 里点 Authorize，带 Token 调 `/me`
+- [x] `../app/utils/JWTUtils.py`：hash / verify / create_token / decode_token / get_current_user
+- [x] `../app/schemas/AuthSchemas.py`：`LoginRequest`、`Token`（Token 可留着不用）
+- [x] `../app/Deps.py` 导出 `get_session`、`get_current_user`
+- [x] `../app/api/AuthRouter.py`：login / me / update_me
+- [x] 在 `router.py` 注册 `auth_router`
+- [x] Swagger 里点 Authorize，带 Token 调 `/me`
 
 ---
 

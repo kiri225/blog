@@ -1,6 +1,6 @@
 # 02 — 数据库与 SQLModel
 
-对照源码：`app/database.py`、`app/models/`、`init_db.sql`、`DATABASE.md`
+对照源码：`../app/Database.py`、`app/models/`、`init_db.sql`、`DATABASE.md`
 
 前置：阶段 01 已能启动。
 
@@ -22,16 +22,16 @@
 
 ## 任务清单
 
-- [ ] 写 `app/database.py`：engine、`init_db`、`get_session`
+- [ ] 写 `../app/Database.py`：engine、`init_db`、`get_session`
 - [ ] `lifespan` 启动时调用 `init_db()`
-- [ ] 写 `app/models/user.py`（本阶段就要用，阶段 03 登录）
-- [ ] 写 `app/models/post.py`：Category、Tag、PostTag、Post（阶段 04/05 用）
+- [ ] 写 `../app/models/User.py`（本阶段就要用，阶段 03 登录）
+- [ ] 写 `../app/models/Post.py`：Category、Tag、PostTag、Post（阶段 04/05 用）
 - [ ] `app/models/__init__.py` 导入所有模型（**必须导入**，否则 `create_all` 建不出表）
 - [ ] 启动后确认表已创建；插入一个管理员账号
 
 ---
 
-## `database.py` 规格
+## `Database.py` 规格
 
 ```python
 engine = create_engine(DATABASE_URL, echo=False, pool_pre_ping=True)
@@ -73,7 +73,7 @@ def get_session():
 
 ### Category / Tag / Post / PostTag
 
-字段以对照 `app/models/post.py` 为准，完整表结构见源码或 [附录](./附录-接口总表.md) 不做接口也能先建表。
+字段以对照 `../app/models/Post.py` 为准，完整表结构见源码或 [附录](./附录-接口总表.md) 不做接口也能先建表。
 
 关系：
 
@@ -92,7 +92,8 @@ Post ── PostTag ←→ Tag
 **不要**把明文密码存库。用阶段 03 的 `hash_password`。可以临时在 Python 里：
 
 ```python
-from app.utils.auth import hash_password
+from app.utils.JWTUtils import hash_password
+
 print(hash_password("admin123"))
 ```
 

@@ -502,7 +502,7 @@ COMMENT ON COLUMN visitor.created_at IS '访问时间';
 INSERT INTO "user" (username, hashed_password, nickname, is_admin)
 VALUES (
     'admin',
-    '$2b$12$LJ3m4ys4Pz0C5eK8rZqYaOzLiGh5v1DmdMFRnDvMQfLpUfKlPu5S.',
+    '$2b$12$8wTwPfb4vM6gdA0f0tnUJO4E0vLSRFoH49SDl/aSFv91IvJ5lnywq',
     '管理员',
     TRUE
 ) ON CONFLICT (username) DO NOTHING;
