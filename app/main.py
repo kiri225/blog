@@ -5,10 +5,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import SECRET_KEY, CORS_ORIGINS
 from app.api.router import api_router
+from app.database import init_db
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # 启动时执行一次（阶段 02 再在这里 init_db）
+    # 启动时执行一次，初始化数据库
+    init_db()
     yield
 
 
