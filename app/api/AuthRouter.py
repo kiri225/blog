@@ -30,25 +30,25 @@ def login(LoginReq: LoginRequest, session: Session = Depends(get_session)):
 
 
 @router.get("/me", response_model=Result[UserResponse])
-def me(user: dict = Depends(get_current_user), session: Session = Depends(get_session)):
+def me(current_user: dict = Depends(get_current_user), session: Session = Depends(get_session)):
     """获取当前用户信息。
 
     需管理员 JWT。用户已删除则 404。
 
     Args:
-        user: JWT payload，由依赖注入提供。
+        current_user: JWT payload，由依赖注入提供。
         session: 数据库会话，由依赖注入提供。
 
     Returns:
         统一结果集。成功时 code=200，data 为 UserResponse。
     """
-    return auth_service.get_user_info(session, user.get("sub"))
+    return auth_service.get_user_info(session, current_user.get("sub"))
 
 
 @router.put("/me", response_model=Result)
 def update_me(
     UpdateUserInfoReq: UpdateUserInfoRequest,
-    user: dict = Depends(get_current_user),
+    current_user: dict = Depends(get_current_user),
     session: Session = Depends(get_session),
 ):
     """更新当前用户资料。
@@ -58,10 +58,10 @@ def update_me(
 
     Args:
         UpdateUserInfoReq: 更新请求体，字段均可选。
-        user: JWT payload，由依赖注入提供。
+        current_user: JWT payload，由依赖注入提供。
         session: 数据库会话，由依赖注入提供。
 
     Returns:
         统一结果集。成功时 code=200，message 为「更新成功」。
     """
-    return auth_service.update_user_info(session, user.get("sub"), UpdateUserInfoReq)
+    return auth_service.update_user_info(session, current_user.get("sub"), UpdateUserInfoReq)

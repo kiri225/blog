@@ -98,5 +98,5 @@ kirameku-learn/
 管理员接口统一写法：
 
 ```python
-_: dict = Depends(get_current_user)
+current_user: dict = Depends(get_current_user)
 ```

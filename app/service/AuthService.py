@@ -36,19 +36,12 @@ def login(session: Session, username: str, password: str) -> Result:
     # 5.统一结果集返回
     return Result.success(
         LoginResponse(
-            # 访问令牌
             access_token=token,
-            # 过期时间
             expires=expires,
-            # 头像
             avatar=user.avatar or "",
-            # 用户名
             username=user.username,
-            # 昵称
             nickname=user.nickname or user.username,
-            # 角色
             roles=["admin"] if user.is_admin else [],
-            # 权限
             permissions=["*:*:*"] if user.is_admin else [],
         )
     )
@@ -71,21 +64,13 @@ def get_user_info(session: Session, username: str) -> Result:
     # 2.统一结果集返回
     return Result.success(
         UserResponse(
-            # 头像
             avatar=user_info.avatar or "",
-            # 用户名
             username=user_info.username,
-            # 昵称
             nickname=user_info.nickname or user_info.username,
-            # 邮箱
             email=user_info.email or "",
-            # 简介（表字段 bio）
             description=user_info.bio or "",
-            # 手机号，表里没有则空串
             phone="",
-            # 角色
             roles=["admin"] if user_info.is_admin else [],
-            # 权限
             permissions=["*:*:*"] if user_info.is_admin else [],
         )
     )

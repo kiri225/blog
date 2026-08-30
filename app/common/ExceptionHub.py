@@ -13,14 +13,10 @@ def register_exception_handlers(app: FastAPI) -> None:
     async def http_exception_handler(
         request: Request, exc: StarletteHTTPException
     ) -> JSONResponse:
-        detail = exc.detail
-        if isinstance(detail, str):
-            message, data = detail, None
-        else:
-            message, data = "请求失败", detail
+        message = exc.detail if isinstance(exc.detail, str) else "请求失败"
         return JSONResponse(
             status_code=exc.status_code,
-            content=Result.fail(exc.status_code, message, data).model_dump(),
+            content=Result.fail(exc.status_code, message).model_dump(),
         )
 
     @app.exception_handler(RequestValidationError)
@@ -29,7 +25,7 @@ def register_exception_handlers(app: FastAPI) -> None:
     ) -> JSONResponse:
         return JSONResponse(
             status_code=422,
-            content=Result.fail(422, "参数校验失败", exc.errors()).model_dump(),
+            content=Result.fail(422, "参数校验失败").model_dump(),
         )
 
     @app.exception_handler(Exception)

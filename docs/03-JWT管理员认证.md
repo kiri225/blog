@@ -116,12 +116,12 @@ Body：随意 dict，处理这些键（有则更新）：
 def create_xxx(
     data: XxxCreate,
     session: Session = Depends(get_session),
-    _: dict = Depends(get_current_user),
+    current_user: dict = Depends(get_current_user),
 ):
     ...
 ```
 
-`_` 表示「只要鉴权通过，本函数不用 payload」。需要用户名时用 `user: dict = Depends(get_current_user)`，再 `user["sub"]`。
+`current_user` 表示「必须带管理员 JWT」。函数里不用 payload 就别读；需要用户名时 `current_user.get("sub")`。
 
 Swagger：点击右上角 **Authorize**，填 `Bearer` 的 token（有的 UI 只填 token 本身，HTTPBearer 会自动加前缀）。
 
