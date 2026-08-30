@@ -1,0 +1,20 @@
+# FastAPI 依赖
+fastapi==0.115.6
+# Uvicorn 依赖
+uvicorn[standard]==0.34.0
+# SQLModel 依赖
+sqlmodel==0.0.22
+# Python-Dotenv 依赖
+python-dotenv>=1.0.0
+# Python-Multipart 依赖
+python-multipart==0.0.18
+# Passlib 依赖
+passlib[bcrypt]==1.7.4
+# Python-Jose 依赖
+python-jose[cryptography]==3.3.0
+# Httpx 依赖
+httpx>=0.27.0
+# Pillow 依赖
+Pillow>=10.0.0
+# Python 3.14 没有可用的 psycopg2-binary 轮子，改用 psycopg3
+psycopg[binary]>=3.2.0
