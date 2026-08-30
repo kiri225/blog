@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from fastapi import HTTPException
 from sqlmodel import Session, select
 
@@ -106,12 +108,19 @@ def update_category(
         raise HTTPException(status_code=404, detail="分类不存在")
 
     # 2.判断名称或别名是否被其它分类占用
+    name = (
+        UpdateCategoryReq.name
+        if UpdateCategoryReq.name is not None
+        else category.name
+    )
+    slug = (
+        UpdateCategoryReq.slug
+        if UpdateCategoryReq.slug is not None
+        else category.slug
+    )
     existed = session.exec(
         select(Category).where(
-            (
-                (Category.name == UpdateCategoryReq.name)
-                | (Category.slug == UpdateCategoryReq.slug)
-            )
+            ((Category.name == name) | (Category.slug == slug))
             & (Category.id != cat_id)
         )
     ).first()
@@ -119,10 +128,15 @@ def update_category(
         raise HTTPException(status_code=400, detail="分类已存在")
 
     # 3.按传入字段更新
-    category.name = UpdateCategoryReq.name
-    category.slug = UpdateCategoryReq.slug
-    category.description = UpdateCategoryReq.description
-    category.sort = UpdateCategoryReq.sort
+    if UpdateCategoryReq.name is not None:
+        category.name = UpdateCategoryReq.name
+    if UpdateCategoryReq.slug is not None:
+        category.slug = UpdateCategoryReq.slug
+    if UpdateCategoryReq.description is not None:
+        category.description = UpdateCategoryReq.description
+    if UpdateCategoryReq.sort is not None:
+        category.sort = UpdateCategoryReq.sort
+    category.updated_at = datetime.now()
 
     # 4.落库
     session.commit()
