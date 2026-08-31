@@ -1,102 +1,55 @@
-# Kirameku Backend 开发任务文档
+# 开发记录
 
-对照源码：`blog/Kirameku/Kirameku-backend`
+按**已完成的业务模块**归档：每次开发一个模块，就新增一份同名 md。
 
-这套文档把真实博客后端拆成 **12 个可执行阶段**。每做完一阶段，你会多掌握一块 FastAPI 能力，同时得到一套能跑的接口。
+每份模块文档固定两块：
 
-目标不是抄代码，而是：**按任务规格自己实现 → 用 `/docs` 自测 → 卡住再对照源码。**
+1. **前后端交接规范**：路径、鉴权、字段、成功/失败体，给前端对齐用。
+2. **后端接口执行流程**：每个接口从路由进 service、到 `Result` / 拦截器的步骤图，给后端对照实现用。
+
+对照样例：[01-用户认证](./modules/01-用户认证.md)。写法规范见仓库 skill `module-dev-docs`。
+
+改接口代码后，**提交 / 推送前必须核对**对应模块文档是否已跟上（字段、鉴权、错误文案、流程图步骤）。没更新就先改文档再提交。
 
 ---
 
 ## 怎么用
 
-1. 先读 [00-约定与架构.md](./00-约定与架构.md)，后面所有阶段都按这套约定写。
-2. 从阶段 01 开始，按顺序做。每个阶段文档结构相同：
-   - **学什么**：本阶段对应的 FastAPI / 后端知识点
-   - **任务清单**：要写哪些文件、做什么
-   - **接口规格**：方法、路径、鉴权、参数、响应
-   - **业务规则**：容易漏掉的逻辑
-   - **验收标准**：做到什么算过关
-3. 对照答案在 `Kirameku-backend/app/`，卡住再看，不要先复制。
-4. 每阶段完成后，打开 `http://localhost:8000/docs` 把本阶段接口全部点一遍。
+- 前端只看各模块「前后端交接规范」，不要对着源码猜字段。
+- 后端实现或排查时看「接口执行流程」，步骤编号与 service 里 `# 1.` `# 2.` 一致。
+- 新模块开发完成后，按 01 的章节结构再写一份，放到 `docs/modules/`，并在下面总表加一行。
 
-学习阶段可以先用 **SQLite**，不必一上来就配 PostgreSQL / 阿里云 OSS。文档里会标明哪些可以简化。
+早期 `docs/00`–`12` 学习稿仅作参考，**以后端真实代码 + `docs/modules/` 为准**。
 
 ---
 
-## 阶段总表
+## 全局约定（所有模块共用）
 
-| 阶段 | 文档 | 核心接口 | FastAPI 知识点 | 预计 |
-|------|------|----------|----------------|------|
-| 00 | [约定与架构](./00-约定与架构.md) | — | 分层、鉴权、响应风格 | 阅读 |
-| 01 | [环境搭建与项目骨架](./01-环境搭建与项目骨架.md) | `/api/health` | FastAPI 实例、lifespan、CORS、Router、静态文件 | 半天 |
-| 02 | [数据库与 SQLModel](./02-数据库与SQLModel.md) | 建表 | SQLModel、Session 依赖注入 | 半天 |
-| 03 | [JWT 管理员认证](./03-JWT管理员认证.md) | `/api/auth/*` | Depends、HTTPBearer、Pydantic Body | 半天 |
-| 04 | [分类与标签](./04-分类与标签.md) | `/api/categories` `/api/tags` | 第一套完整 CRUD、response_model | 半天 |
-| 05 | [文章系统](./05-文章系统.md) | `/api/posts` | 路径参数、Query、分页、多对多、路由顺序 | 1 天 |
-| 06 | [GitHub OAuth](./06-GitHub-OAuth.md) | `/api/auth/github/*` | RedirectResponse、外部 HTTP、可选登录 | 半天 |
-| 07 | [评论与留言板](./07-评论与留言板.md) | `/api/comments` `/api/messages` | Request、树形数据、IP 提取 | 1 天 |
-| 08 | [说说](./08-说说.md) | `/api/chatters` | 静态路径 vs 动态路径、JSON 字段 | 半天 |
-| 09 | [相册与图片上传](./09-相册与图片上传.md) | `/api/albums` `/api/upload` | UploadFile、File()、一对多 | 半天 |
-| 10 | [项目展示与友链](./10-项目展示与友链.md) | `/api/projects` `/api/friend-links` | 审核字段、公开/管理双列表 | 半天 |
-| 11 | [站点配置与收藏夹](./11-站点配置与收藏夹.md) | `/api/site-config` `/api/bookmarks` | KV 配置、嵌套响应 | 半天 |
-| 12 | [访客记录与仪表盘](./12-访客记录与仪表盘.md) | `/api/visitors` `/api/dashboard` | 聚合查询、Header、第三方 API | 半天 |
+| 项 | 约定 |
+|----|------|
+| 成功 | HTTP 200，body `{code: 200, message, data}` |
+| 失败 | HTTP 状态码与 body `code` 相同（401 / 403 / 404 / 422 / 500），`data` 为 `null` |
+| 鉴权 | 写操作：`Authorization: Bearer <JWT>`；未带 Token → **403**；Token 无效/过期 → **401** `无效的令牌` |
+| 校验失败 | HTTP 422，`message` 为「参数校验失败」 |
+| JSON 命名 | 认证令牌字段 camelCase（`accessToken`）；其余模块目前为 snake_case |
 
-完整接口索引：[附录-接口总表.md](./附录-接口总表.md)
+管理员 JWT payload：`sub`（username）、`admin`（bool）、`exp`。有效期 72 小时，算法 HS256。
 
----
+非模块接口（写在 `app/main.py`，不单独建 md）：
 
-## 推荐目录（你自己的练习项目）
-
-建议在 `d:\code-py\Fast-api\` 下新建一个练习目录（不要直接改对照源码）：
-
-```
-kirameku-learn/
-├── .env
-├── requirements.txt
-├── start.py
-├── uploads/
-└── app/
-    ├── main.py
-    ├── config.py
-    ├── database.py
-    ├── deps.py
-    ├── api/
-    │   ├── __init__.py
-    │   ├── router.py
-    │   └── ...
-    ├── models/
-    ├── schemas/
-    ├── services/
-    └── utils/
-        └── auth.py
-```
+| 方法 | 路径 | 响应 |
+|------|------|------|
+| GET | `/api/health` | `{"status": "ok"}`（不是 Result 信封） |
+| GET | `/api/routes` | `{code: 200, message: "success", data: []}` 菜单占位 |
 
 ---
 
-## 技术栈（对照项目）
+## 模块总表
 
-| 层 | 技术 | 版本（对照源码） |
-|----|------|------------------|
-| Web | FastAPI + Uvicorn | 0.115 / 0.34 |
-| ORM | SQLModel | 0.0.22 |
-| 数据库 | PostgreSQL（学习可用 SQLite） | 14+ |
-| 认证 | JWT（python-jose）+ bcrypt | HS256，72 小时 |
-| 上传 | 阿里云 OSS（学习可存本地） | oss2 |
-| 访客地理 | ipapi.co | httpx |
+| 序号 | 模块 | 文档 | 前缀 | Swagger tag |
+|------|------|------|------|-------------|
+| 01 | 用户认证 | [01-用户认证](./modules/01-用户认证.md) | `/api/auth` | 用户认证模块 |
+| 02 | 分类与标签 | [02-分类与标签](./modules/02-分类与标签.md) | `/api/categories` `/api/tags` | 分类模块 / 文章标签模块 |
+| 03 | 文章 | [03-文章模块](./modules/03-文章模块.md) | `/api/posts` | 文章模块 |
 
----
-
-## 鉴权速查
-
-| 角色 | 方式 | 用在哪 |
-|------|------|--------|
-| 管理员 | `Authorization: Bearer <JWT>`，由 `/api/auth/login` 签发 | 写文章、分类、上传、审核等后台操作 |
-| GitHub 访客 | 另一套 JWT，`type=github` | 发评论、留言、说说评论 |
-| 公开 | 无 Token | 读文章、列表、点赞 |
-
-管理员接口统一写法：
-
-```python
-current_user: dict = Depends(get_current_user)
-```
+后续模块按开发顺序追加行。不要回头改已发布模块的字段含义；要改就在该模块文档里写变更说明。
