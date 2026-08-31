@@ -36,14 +36,15 @@ def callback(code: str, session: Session = Depends(get_session)) -> RedirectResp
     用 code 换票、落库、签发访客 JWT，再 302 回前端并带 token。
 
     Args:
-        code: GitHub 带回的授权码。
+        code: GitHub 回调 query 里的授权码（GitHub 固定叫 code）。
         session: 数据库会话，由依赖注入提供。
 
     Returns:
         302 RedirectResponse，Location 为前端 /auth/callback?token=。
     """
     return RedirectResponse(
-        github_auth_service.handle_callback(session, code), status_code=302
+        github_auth_service.handle_callback(session, github_authorization=code),
+        status_code=302,
     )
 
 
@@ -61,7 +62,7 @@ def me(request: Request, session: Session = Depends(get_session)):
         统一结果集。成功时 code=200，data 为 GitHubUserResponse
         （id、login、avatar、bio）。
     """
-    return github_auth_service.get_me(session, request)
+    return github_auth_service.get_github_user(session, request)
 
 
 @router.post("/dev-login", response_model=Result[GitHubDevLoginResponse])

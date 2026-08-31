@@ -12,8 +12,8 @@ python-multipart==0.0.18
 passlib[bcrypt]==1.7.4
 # Python-Jose 依赖
 python-jose[cryptography]==3.3.0
-# Httpx 依赖
-httpx>=0.27.0
+# Requests 依赖
+requests>=2.32.0
 # Pillow 依赖
 Pillow>=10.0.0
 # Python 3.14 没有可用的 psycopg2-binary 轮子，改用 psycopg3

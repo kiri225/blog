@@ -194,7 +194,7 @@ GitHub 授权后带回 `code`。
 
 `/login`、`/callback` 成功返回 `RedirectResponse`（302）。`/me`、`/dev-login` 成功 `Result.success`；失败 `raise HTTPException`，由 `ExceptionHub` 转成同结构 JSON。
 
-GitHub JWT 不用 `get_current_user`（那是 `HTTPBearer`，缺 Token 会 403）。`/me` 把 `Request` 传进 service，在 `get_me` 里读 Authorization。
+GitHub JWT 不用 `get_current_user`（那是 `HTTPBearer`，缺 Token 会 403）。`/me` 把 `Request` 传进 service，在 `get_github_user` 里读 Authorization。
 
 ### 3.1 GET `/api/auth/github/login`
 
@@ -219,14 +219,17 @@ flowchart TD
     D --> E{"有 access_token?"}
     E -->|否| F["400 GitHub 授权失败"]
     E -->|是| G["2. GET api.github.com/user"]
-    G --> H{"HTTP 200 且有 id?"}
+    G --> H{"HTTP 200?"}
     H -->|否| I["400 获取 GitHub 用户信息失败"]
-    H -->|是| J["3. 按 github_id 查表<br/>有则更新 login/avatar/bio<br/>无则插入"]
-    J --> K["4. 签发 JWT<br/>sub=本地 id，type=github"]
-    K --> L["5. 拼 FRONTEND_ORIGIN/auth/callback?token="]
-    L --> M["路由 RedirectResponse 302"]
-    F --> N["ExceptionHub"]
-    I --> N
+    H -->|是| J["3. 取 github_id"]
+    J --> K{"有 id?"}
+    K -->|否| I
+    K -->|是| L["4–9. 按 github_id 更新或插入"]
+    L --> M["10. 签发 JWT<br/>sub=本地 id，type=github"]
+    M --> N["11–12. 拼并返回前端回调地址"]
+    N --> O["路由 RedirectResponse 302"]
+    F --> P["ExceptionHub"]
+    I --> P
 ```
 
 换票或拉用户遇网络错误 / 非 JSON，同样 400 `GitHub 授权失败`。
@@ -236,7 +239,7 @@ flowchart TD
 ```mermaid
 flowchart TD
     A["GET /api/auth/github/me"] --> B["注入 Session，传入 Request"]
-    B --> C["GitHubAuthService.get_me"]
+    B --> C["GitHubAuthService.get_github_user"]
     C --> D["1. 取出 Bearer Token"]
     D --> E{"Authorization 以 Bearer 开头?"}
     E -->|否| F["401 未登录"]
