@@ -25,6 +25,10 @@ CORS_ORIGINS = [o.strip() for o in _cors.split(",") if o.strip()]
 # GitHub OAuth（访客登录；未配置时为空字符串，相关接口不可用）
 GITHUB_CLIENT_ID = os.environ.get("GITHUB_CLIENT_ID", "")
 GITHUB_CLIENT_SECRET = os.environ.get("GITHUB_CLIENT_SECRET", "")
+# OAuth 成功后 302 回去的前端源，练习默认本机
+FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN", "http://localhost:3000").rstrip("/")
+# 仅开发：为 "1" 时开放 POST /api/auth/github/dev-login，生产不要开
+DEV_FAKE_GITHUB = os.getenv("DEV_FAKE_GITHUB", "") == "1"
 
 # 阿里云 OSS：上传图片等静态资源
 OSS_ACCESS_KEY_ID = os.environ["OSS_ACCESS_KEY_ID"]

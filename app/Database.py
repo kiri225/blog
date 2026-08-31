@@ -6,6 +6,7 @@ from app.models.Category import Category
 from app.models.Tag import Tag
 from app.models.Post import Post
 from app.models.PostTag import PostTag
+from app.models.GitHubUser import GitHubUser
 
 # 创建数据库引擎
 engine = create_engine(DATABASE_URL, echo=False, pool_pre_ping=True)

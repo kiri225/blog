@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, timezone
 import bcrypt
 from fastapi import Depends, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from jose import jwt, JWTError
+from jose import jwt, JWTError, ExpiredSignatureError
 
 from app.Config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_HOURS
 
@@ -24,7 +24,7 @@ def verify_password(plain: str, hashed: str) -> bool:
 
 
 def create_token(data: dict) -> str:
-    """签发 JWT。payload 至少含 sub / admin，这里补上 exp（默认 72 小时）。"""
+    """签发 JWT。补上 exp（默认 72 小时）。管理员带 sub/admin，访客带 sub/login/type。"""
     expire = datetime.now(timezone.utc) + timedelta(hours=ACCESS_TOKEN_EXPIRE_HOURS)
     return jwt.encode({**data, "exp": expire}, SECRET_KEY, algorithm=ALGORITHM)
 
@@ -42,3 +42,27 @@ def get_current_user(
 ) -> dict:
     """鉴权依赖：取出 Bearer Token 并解码，路由里 Depends 即可拿到 payload。"""
     return decode_token(credentials.credentials)
+
+
+def decode_github_token(token: str) -> dict:
+    """解析 GitHub 访客 JWT。过期、签名错误、type 不是 github 一律 401。"""
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    except ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="登录已过期，请重新登录")
+    except JWTError:
+        raise HTTPException(status_code=401, detail="未登录")
+    if payload.get("type") != "github":
+        raise HTTPException(status_code=401, detail="未登录")
+    return payload
+
+
+def try_decode_github_token(token: str) -> dict | None:
+    """解析 GitHub 访客 JWT。失败返回 None，不抛错。"""
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    except JWTError:
+        return None
+    if payload.get("type") != "github":
+        return None
+    return payload

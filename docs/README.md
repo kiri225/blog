@@ -15,11 +15,11 @@
 
 ## 怎么用
 
-- 前端只看各模块「前后端交接规范」，不要对着源码猜字段。
+- 前端只看各模块「前后端交接规范」，不要对着源码猜字段。按页怎么接、岛民壳怎么做，走 [前端任务文档](./前端任务文档/README.md)。
 - 后端实现或排查时看「接口执行流程」，步骤编号与 service 里 `# 1.` `# 2.` 一致。
 - 新模块开发完成后，按 01 的章节结构再写一份，放到 `docs/modules/`，并在下面总表加一行。
 
-早期 `docs/00`–`12` 学习稿仅作参考，**以后端真实代码 + `docs/modules/` 为准**。
+早期后端 `docs/后端任务文档/`、前端 `docs/前端任务文档/` 是学习路径；**字段以后端真实代码 + `docs/modules/` 为准**。
 
 ---
 
@@ -34,6 +34,8 @@
 | JSON 命名 | 认证令牌字段 camelCase（`accessToken`）；其余模块目前为 snake_case |
 
 管理员 JWT payload：`sub`（username）、`admin`（bool）、`exp`。有效期 72 小时，算法 HS256。
+
+GitHub 访客 JWT 同一 `SECRET_KEY`，payload：`sub`（本地 `github_user.id` 字符串）、`login`、`type: "github"`、`exp`。不要和管理员 Token 混用。访客接口手动读 Header，缺 Bearer 是 **401** `未登录`（不是 403）。
 
 非模块接口（写在 `app/main.py`，不单独建 md）：
 
@@ -51,5 +53,6 @@
 | 01 | 用户认证 | [01-用户认证](./modules/01-用户认证.md) | `/api/auth` | 用户认证模块 |
 | 02 | 分类与标签 | [02-分类与标签](./modules/02-分类与标签.md) | `/api/categories` `/api/tags` | 分类模块 / 文章标签模块 |
 | 03 | 文章 | [03-文章模块](./modules/03-文章模块.md) | `/api/posts` | 文章模块 |
+| 04 | GitHub 登录 | [04-GitHub-OAuth](./modules/04-GitHub-OAuth.md) | `/api/auth/github` | GitHub 登录 |
 
 后续模块按开发顺序追加行。不要回头改已发布模块的字段含义；要改就在该模块文档里写变更说明。
