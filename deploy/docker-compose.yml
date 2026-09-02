@@ -94,6 +94,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /usr/bin/docker:/usr/local/bin/docker:ro
+      - /root/.ssh:/root/.ssh:ro
       - .:/stack
     working_dir: /stack
     networks:

@@ -19,8 +19,10 @@ def _run_deploy() -> None:
             [
                 "/usr/local/bin/docker",
                 "exec",
+                "-e",
+                "DEPLOY_DIR=/stack",
                 DEPLOY_AGENT,
-                "sh",
+                "bash",
                 f"{DEPLOY_STACK_DIR}/deploy.sh",
             ],
             cwd=DEPLOY_STACK_DIR,
