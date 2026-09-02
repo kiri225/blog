@@ -41,7 +41,8 @@ clone_or_pull Kirameku "$FRONTEND_REPO"
 clone_or_pull admin "$ADMIN_REPO"
 
 cp "$REPOS_DIR/blog/deploy/docker-compose.yml" "$DEPLOY_DIR/docker-compose.yml"
-cp "$REPOS_DIR/blog/deploy/nginx.conf" "$DEPLOY_DIR/nginx.conf"
+mkdir -p "$DEPLOY_DIR/deploy-agent"
+cp "$REPOS_DIR/blog/deploy/deploy-agent/Dockerfile" "$DEPLOY_DIR/deploy-agent/Dockerfile"
 if [[ ! -f "$DEPLOY_DIR/.env.example" ]]; then
   cp "$REPOS_DIR/blog/deploy/.env.example" "$DEPLOY_DIR/.env.example"
 fi

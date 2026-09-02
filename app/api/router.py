@@ -18,6 +18,7 @@ from app.api.SiteConfigRouter import router as site_config_router
 from app.api.BookmarkRouter import router as bookmarks_router
 from app.api.VisitorRouter import router as visitors_router
 from app.api.DashboardRouter import router as dashboard_router
+from app.api.DeployRouter import router as deploy_router
 
 api_router.include_router(auth_router)
 api_router.include_router(github_auth_router)
@@ -35,5 +36,6 @@ api_router.include_router(site_config_router)
 api_router.include_router(bookmarks_router)
 api_router.include_router(visitors_router)
 api_router.include_router(dashboard_router)
+api_router.include_router(deploy_router)
 
 
