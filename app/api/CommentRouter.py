@@ -14,7 +14,7 @@ from app.schemas.CommentSchemas import (
 from app.service import CommentService as comment_service
 
 
-router = APIRouter(prefix="/api/comments", tags=["评论"])
+router = APIRouter(prefix="/api/comments", tags=["评论模块"])
 
 
 @router.get("/post/{post_id}", response_model=Result[list[CommentResponse]])
