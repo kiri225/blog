@@ -64,6 +64,13 @@ services:
     environment:
       BACKEND_URL: http://backend:8000
       NODE_ENV: production
+      # 运行时拉取网易云/Meting 需经宿主机代理（直连常超时）
+      HTTP_PROXY: http://172.17.0.1:7890
+      HTTPS_PROXY: http://172.17.0.1:7890
+      http_proxy: http://172.17.0.1:7890
+      https_proxy: http://172.17.0.1:7890
+      NO_PROXY: localhost,127.0.0.1,::1,backend
+      no_proxy: localhost,127.0.0.1,::1,backend
     ports:
       - "${FRONTEND_PORT:-3000}:3000"
     depends_on:
