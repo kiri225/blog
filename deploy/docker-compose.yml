@@ -1,0 +1,71 @@
+services:
+  backend:
+    build:
+      context: ./repos/blog
+      dockerfile: Dockerfile
+    container_name: blog-backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - uploads_data:/app/uploads
+    networks:
+      - blog-net
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health')",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  frontend:
+    build:
+      context: ./repos/Kirameku
+      dockerfile: Dockerfile
+    container_name: blog-frontend
+    restart: unless-stopped
+    environment:
+      BACKEND_URL: http://backend:8000
+      NODE_ENV: production
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - blog-net
+
+  admin:
+    build:
+      context: ./repos/admin
+      dockerfile: Dockerfile
+    container_name: blog-admin
+    restart: unless-stopped
+    networks:
+      - blog-net
+
+  nginx:
+    image: nginx:stable-alpine
+    container_name: blog-nginx
+    restart: unless-stopped
+    ports:
+      - "${HTTP_PORT:-80}:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - backend
+      - frontend
+      - admin
+    networks:
+      - blog-net
+
+volumes:
+  uploads_data:
+
+networks:
+  blog-net:
+    driver: bridge

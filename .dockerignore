@@ -1,0 +1,12 @@
+.venv
+__pycache__
+*.pyc
+.git
+.env
+.env.*
+!.env.example
+docs
+uploads/*
+!uploads/.gitkeep
+*.md
+.cursor
