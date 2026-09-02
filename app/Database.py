@@ -9,6 +9,9 @@ from app.models.PostTag import PostTag
 from app.models.GitHubUser import GitHubUser
 from app.models.Comment import Comment
 from app.models.Message import Message
+from app.models.Chatter import Chatter
+from app.models.ChatterComment import ChatterComment
+
 
 # 创建数据库引擎
 engine = create_engine(DATABASE_URL, echo=False, pool_pre_ping=True)
