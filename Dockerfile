@@ -1,13 +1,9 @@
-# 国内镜像加速（可按需改成 docker.m.daocloud.io / docker.xuanyuan.me）
+# 国内镜像加速
 ARG REGISTRY=docker.1ms.run
-
-FROM ${REGISTRY}/library/docker:27-cli AS dockercli
 
 FROM ${REGISTRY}/library/python:3.12-slim
 
 WORKDIR /app
-
-COPY --from=dockercli /usr/local/bin/docker /usr/local/bin/docker
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt \

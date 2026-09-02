@@ -1,8 +1,19 @@
+x-build-proxy: &build-proxy
+  network: host
+  args:
+    HTTP_PROXY: http://127.0.0.1:7890
+    HTTPS_PROXY: http://127.0.0.1:7890
+    http_proxy: http://127.0.0.1:7890
+    https_proxy: http://127.0.0.1:7890
+    NO_PROXY: localhost,127.0.0.1,::1
+    no_proxy: localhost,127.0.0.1,::1
+
 services:
   backend:
     build:
       context: ./repos/blog
       dockerfile: Dockerfile
+      <<: *build-proxy
     container_name: blog-backend
     restart: unless-stopped
     env_file:
@@ -13,6 +24,7 @@ services:
     volumes:
       - uploads_data:/app/uploads
       - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/local/bin/docker:ro
       - .:/stack
     ports:
       - "${BACKEND_PORT:-8000}:8000"
@@ -38,6 +50,15 @@ services:
     build:
       context: ./repos/Kirameku
       dockerfile: Dockerfile
+      <<: *build-proxy
+      args:
+        BACKEND_URL: http://backend:8000
+        HTTP_PROXY: http://127.0.0.1:7890
+        HTTPS_PROXY: http://127.0.0.1:7890
+        http_proxy: http://127.0.0.1:7890
+        https_proxy: http://127.0.0.1:7890
+        NO_PROXY: localhost,127.0.0.1,::1,backend
+        no_proxy: localhost,127.0.0.1,::1,backend
     container_name: blog-frontend
     restart: unless-stopped
     environment:
@@ -55,6 +76,7 @@ services:
     build:
       context: ./repos/admin
       dockerfile: Dockerfile
+      <<: *build-proxy
     container_name: blog-admin
     restart: unless-stopped
     ports:
@@ -66,10 +88,12 @@ services:
     build:
       context: ./deploy-agent
       dockerfile: Dockerfile
+      <<: *build-proxy
     container_name: blog-deploy-agent
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/local/bin/docker:ro
       - .:/stack
     working_dir: /stack
     networks:

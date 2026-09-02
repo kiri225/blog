@@ -1,8 +1,8 @@
 ARG REGISTRY=docker.1ms.run
 
-FROM ${REGISTRY}/library/docker:27-cli
+FROM ${REGISTRY}/library/alpine:3.20
 
-RUN apk add --no-cache git bash openssh-client
+RUN apk add --no-cache docker-cli git bash openssh-client
 
 WORKDIR /stack
 
