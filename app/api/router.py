@@ -10,6 +10,8 @@ from app.api.PostsApi import router as posts_router
 from app.api.CommentRouter import router as comments_router
 from app.api.MessagesRouter import router as messages_router
 from app.api.ChatterRouter import router as chatters_router
+from app.api.AlbumRouter import router as albums_router
+from app.api.UploadRouter import router as upload_router
 
 api_router.include_router(auth_router)
 api_router.include_router(github_auth_router)
@@ -19,5 +21,7 @@ api_router.include_router(posts_router)
 api_router.include_router(comments_router)
 api_router.include_router(messages_router)
 api_router.include_router(chatters_router)
+api_router.include_router(albums_router)
+api_router.include_router(upload_router)
 
 

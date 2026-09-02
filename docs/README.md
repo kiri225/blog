@@ -57,5 +57,6 @@ GitHub 访客 JWT 同一 `SECRET_KEY`，payload：`sub`（本地 `github_user.id
 | 05 | 评论 | [05-评论](./modules/05-评论.md) | `/api/comments` | 评论模块 |
 | 06 | 留言板 | [06-留言板](./modules/06-留言板.md) | `/api/messages` | 留言板 |
 | 07 | 说说 | [07-说说](./modules/07-说说.md) | `/api/chatters` | 说说模块 |
+| 08 | 相册与图片上传 | [08-相册与图片上传](./modules/08-相册与图片上传.md) | `/api/albums` `/api/upload` | 相册模块 / 上传 |
 
 后续模块按开发顺序追加行。不要回头改已发布模块的字段含义；要改就在该模块文档里写变更说明。

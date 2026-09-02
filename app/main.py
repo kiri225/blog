@@ -1,9 +1,8 @@
 from contextlib import asynccontextmanager
-from pathlib import Path
 from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.Config import SECRET_KEY, CORS_ORIGINS
+from app.Config import CORS_ORIGINS, UPLOADS_DIR
 from app.api.router import api_router
 from app.Database import init_db
 from app.common.ExceptionHub import register_exception_handlers
@@ -38,9 +37,8 @@ app.add_middleware(
 )
 
 # 挂载上传目录
-uploads_dir = Path(__file__).resolve().parent.parent / "uploads"
-uploads_dir.mkdir(exist_ok=True)
-app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
+UPLOADS_DIR.mkdir(exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=str(UPLOADS_DIR)), name="uploads")
 
 # 健康检查
 @app.get("/api/health")

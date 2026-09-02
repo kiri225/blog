@@ -3,6 +3,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 # 项目根目录（app/ 的上一级），用于定位 .env
 BASE_DIR = Path(__file__).resolve().parent.parent
+# 本地上传目录；main 挂载为 /uploads
+UPLOADS_DIR = BASE_DIR / "uploads"
 # 读取 .env；override=True 表示环境变量已存在时仍以文件为准
 load_dotenv(BASE_DIR / ".env", override=True)
 

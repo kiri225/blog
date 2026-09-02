@@ -11,6 +11,8 @@ from app.models.Comment import Comment
 from app.models.Message import Message
 from app.models.Chatter import Chatter
 from app.models.ChatterComment import ChatterComment
+from app.models.Album import Album
+from app.models.Photo import Photo
 
 
 # 创建数据库引擎
