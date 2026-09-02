@@ -14,6 +14,10 @@ from app.api.AlbumRouter import router as albums_router
 from app.api.UploadRouter import router as upload_router
 from app.api.ProjectRouter import router as projects_router
 from app.api.FriendLinkRouter import router as friend_links_router
+from app.api.SiteConfigRouter import router as site_config_router
+from app.api.BookmarkRouter import router as bookmarks_router
+from app.api.VisitorRouter import router as visitors_router
+from app.api.DashboardRouter import router as dashboard_router
 
 api_router.include_router(auth_router)
 api_router.include_router(github_auth_router)
@@ -27,5 +31,9 @@ api_router.include_router(albums_router)
 api_router.include_router(upload_router)
 api_router.include_router(projects_router)
 api_router.include_router(friend_links_router)
+api_router.include_router(site_config_router)
+api_router.include_router(bookmarks_router)
+api_router.include_router(visitors_router)
+api_router.include_router(dashboard_router)
 
 

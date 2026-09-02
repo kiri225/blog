@@ -15,6 +15,10 @@ from app.models.Album import Album
 from app.models.Photo import Photo
 from app.models.Project import Project
 from app.models.FriendLink import FriendLink
+from app.models.SiteConfig import SiteConfig
+from app.models.BookmarkCategory import BookmarkCategory
+from app.models.BookmarkSite import BookmarkSite
+from app.models.Visitor import Visitor
 
 
 # 创建数据库引擎
@@ -23,6 +27,10 @@ engine = create_engine(DATABASE_URL, echo=False, pool_pre_ping=True)
 # 初始化数据库
 def init_db():
     SQLModel.metadata.create_all(engine)
+    from app.service.SiteConfigService import seed_site_configs
+
+    with Session(engine) as session:
+        seed_site_configs(session)
 
 # 获取数据库会话
 def get_session():
