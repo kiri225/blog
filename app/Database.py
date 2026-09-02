@@ -13,6 +13,8 @@ from app.models.Chatter import Chatter
 from app.models.ChatterComment import ChatterComment
 from app.models.Album import Album
 from app.models.Photo import Photo
+from app.models.Project import Project
+from app.models.FriendLink import FriendLink
 
 
 # 创建数据库引擎

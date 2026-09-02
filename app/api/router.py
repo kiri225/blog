@@ -12,6 +12,8 @@ from app.api.MessagesRouter import router as messages_router
 from app.api.ChatterRouter import router as chatters_router
 from app.api.AlbumRouter import router as albums_router
 from app.api.UploadRouter import router as upload_router
+from app.api.ProjectRouter import router as projects_router
+from app.api.FriendLinkRouter import router as friend_links_router
 
 api_router.include_router(auth_router)
 api_router.include_router(github_auth_router)
@@ -23,5 +25,7 @@ api_router.include_router(messages_router)
 api_router.include_router(chatters_router)
 api_router.include_router(albums_router)
 api_router.include_router(upload_router)
+api_router.include_router(projects_router)
+api_router.include_router(friend_links_router)
 
 
