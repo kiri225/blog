@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import Optional
+from sqlalchemy import Index
 from sqlmodel import SQLModel, Field
 
 
@@ -11,7 +12,7 @@ class Photo(SQLModel, table=True):
     # 主键，自增
     id: Optional[int] = Field(default=None, primary_key=True)
     # 所属相册
-    album_id: int = Field(foreign_key="album.id", index=True)
+    album_id: int = Field(foreign_key="album.id")
     # 图片 URL（上传接口返回的 url）
     url: str
     # 说明
@@ -22,3 +23,8 @@ class Photo(SQLModel, table=True):
     sort: int = Field(default=0)
     # 创建时间
     created_at: datetime = Field(default_factory=datetime.now)
+
+    __table_args__ = (
+        # 相册内照片：WHERE album_id=? ORDER BY sort
+        Index("idx_photo_album_sort", "album_id", "sort"),
+    )

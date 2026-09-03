@@ -11,7 +11,7 @@ class User(SQLModel, table=True):
     # 主键，自增；写入时不传，由数据库生成
     id: Optional[int] = Field(default=None, primary_key=True)
     # 登录用户名，唯一
-    username: str = Field(max_length=50, unique=True, index=True)
+    username: str = Field(max_length=50, unique=True)
     # 密码哈希，禁止存明文
     hashed_password: str = Field(max_length=128)
     # 昵称，展示用

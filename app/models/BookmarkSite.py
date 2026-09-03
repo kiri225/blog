@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import Optional
+from sqlalchemy import Index
 from sqlmodel import SQLModel, Field
 
 
@@ -14,7 +15,7 @@ class BookmarkSite(SQLModel, table=True):
     # 主键，自增
     id: Optional[int] = Field(default=None, primary_key=True)
     # 所属收藏分类；分类删除时级联删站点
-    category_id: int = Field(foreign_key="bookmark_category.id", index=True)
+    category_id: int = Field(foreign_key="bookmark_category.id")
     # 站点名称
     name: str = Field(max_length=100)
     # 站点地址
@@ -31,3 +32,8 @@ class BookmarkSite(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.now)
     # 更新时间
     updated_at: datetime = Field(default_factory=datetime.now)
+
+    __table_args__ = (
+        # WHERE category_id=? ORDER BY sort
+        Index("idx_bookmark_site_category_sort", "category_id", "sort"),
+    )

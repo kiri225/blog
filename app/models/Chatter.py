@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import Optional
+from sqlalchemy import Index
 from sqlmodel import SQLModel, Field
 
 
@@ -21,8 +22,13 @@ class Chatter(SQLModel, table=True):
     # 评论数；发表评论 +1，删除评论 -1（最小 0）
     comments_count: int = Field(default=0)
     # 状态：draft / published；前台列表只返回 published
-    status: str = Field(default="draft", max_length=20, index=True)
+    status: str = Field(default="draft", max_length=20)
     # 创建时间
     created_at: datetime = Field(default_factory=datetime.now)
     # 更新时间
     updated_at: datetime = Field(default_factory=datetime.now)
+
+    __table_args__ = (
+        # 列表：WHERE status=? ORDER BY created_at DESC
+        Index("idx_chatter_status_created", "status", "created_at"),
+    )

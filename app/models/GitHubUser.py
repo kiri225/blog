@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import Optional
+from sqlalchemy import Index
 from sqlmodel import SQLModel, Field
 
 
@@ -13,8 +14,8 @@ class GitHubUser(SQLModel, table=True):
 
     # 主键，自增；JWT 的 sub 用这个，不是 github_id
     id: Optional[int] = Field(default=None, primary_key=True)
-    # GitHub 数字 id，唯一
-    github_id: int = Field(unique=True, index=True)
+    # GitHub 数字 id，唯一（UNIQUE 自带索引）
+    github_id: int = Field(unique=True)
     # GitHub 用户名
     login: str = Field(max_length=100)
     # 头像 URL
@@ -23,3 +24,8 @@ class GitHubUser(SQLModel, table=True):
     bio: str = Field(default="", max_length=500)
     # 创建时间
     created_at: datetime = Field(default_factory=datetime.now)
+
+    __table_args__ = (
+        # 开发假登录 / 按 login 查用户
+        Index("idx_github_user_login", "login"),
+    )

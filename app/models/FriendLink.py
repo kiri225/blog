@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import Optional
+from sqlalchemy import Index
 from sqlmodel import SQLModel, Field
 
 
@@ -24,8 +25,13 @@ class FriendLink(SQLModel, table=True):
     # 排序，越小越靠前
     sort: int = Field(default=0)
     # 是否已审核；前台列表只返回 True
-    is_approved: bool = Field(default=False, index=True)
+    is_approved: bool = Field(default=False)
     # 创建时间
     created_at: datetime = Field(default_factory=datetime.now)
     # 更新时间
     updated_at: datetime = Field(default_factory=datetime.now)
+
+    __table_args__ = (
+        # 前台：WHERE is_approved=true ORDER BY sort
+        Index("idx_friend_link_approved_sort", "is_approved", "sort"),
+    )

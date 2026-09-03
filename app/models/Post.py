@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import Optional
+from sqlalchemy import Index
 from sqlmodel import SQLModel, Field
 
 
@@ -12,8 +13,8 @@ class Post(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     # 标题
     title: str = Field(max_length=200)
-    # URL 别名，前台按此访问，唯一
-    slug: str = Field(max_length=200, unique=True, index=True)
+    # URL 别名，前台按此访问，唯一（UNIQUE 自带索引，不再额外 index=True）
+    slug: str = Field(max_length=200, unique=True)
     # 摘要
     description: str = Field(default="", max_length=500)
     # 正文
@@ -23,7 +24,7 @@ class Post(SQLModel, table=True):
     # 所属分类；分类删除时置空，不级联删文章
     category_id: Optional[int] = Field(default=None, foreign_key="category.id")
     # 状态：draft / published / archived
-    status: str = Field(default="draft", max_length=20, index=True)
+    status: str = Field(default="draft", max_length=20)
     # 是否置顶
     is_pinned: bool = Field(default=False)
     # 浏览量
@@ -40,3 +41,12 @@ class Post(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.now)
     # 更新时间
     updated_at: datetime = Field(default_factory=datetime.now)
+
+    __table_args__ = (
+        # 列表：WHERE status=? ORDER BY is_pinned DESC, created_at DESC
+        Index("idx_post_list", "status", "is_pinned", "created_at"),
+        # 按分类筛 / 重算 post_count
+        Index("idx_post_category", "category_id"),
+        # 仪表盘近 30 天：WHERE status=published AND published_at >= ?
+        Index("idx_post_published", "status", "published_at"),
+    )

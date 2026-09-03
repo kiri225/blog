@@ -13,7 +13,7 @@ class Project(SQLModel, table=True):
     # 名称
     name: str = Field(max_length=100)
     # URL 别名，前台按此访问，唯一
-    slug: str = Field(max_length=200, unique=True, index=True)
+    slug: str = Field(max_length=200, unique=True)
     # 短描述
     description: str = Field(default="", max_length=500)
     # 长描述，Markdown

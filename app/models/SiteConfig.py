@@ -14,7 +14,7 @@ class SiteConfig(SQLModel, table=True):
     # 主键，自增
     id: Optional[int] = Field(default=None, primary_key=True)
     # 配置键，全站唯一
-    key: str = Field(max_length=100, unique=True, index=True)
+    key: str = Field(max_length=100, unique=True)
     # 配置值，TEXT 存 JSON 字符串或普通字符串
     value: str = Field(default="")
     # 配置说明

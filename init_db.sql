@@ -92,9 +92,10 @@ CREATE TABLE IF NOT EXISTS post (
     updated_at    TIMESTAMP    DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_post_slug ON post(slug);
-CREATE INDEX IF NOT EXISTS idx_post_status ON post(status);
+-- slug UNIQUE 已带索引，不再单独建 idx_post_slug
+CREATE INDEX IF NOT EXISTS idx_post_list ON post(status, is_pinned, created_at);
 CREATE INDEX IF NOT EXISTS idx_post_category ON post(category_id);
+CREATE INDEX IF NOT EXISTS idx_post_published ON post(status, published_at);
 
 COMMENT ON TABLE post IS '文章';
 COMMENT ON COLUMN post.id IS '主键';
@@ -123,6 +124,9 @@ CREATE TABLE IF NOT EXISTS post_tag (
     PRIMARY KEY (post_id, tag_id)
 );
 
+-- 联合主键 (post_id, tag_id) 覆盖按文章查；按标签反查文章需要 (tag_id, post_id)
+CREATE INDEX IF NOT EXISTS idx_post_tag_tag ON post_tag(tag_id, post_id);
+
 COMMENT ON TABLE post_tag IS '文章与标签多对多关联';
 COMMENT ON COLUMN post_tag.post_id IS '文章 ID';
 COMMENT ON COLUMN post_tag.tag_id IS '标签 ID';
@@ -139,7 +143,8 @@ CREATE TABLE IF NOT EXISTS github_user (
     created_at    TIMESTAMP    DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_github_user_id ON github_user(github_id);
+-- github_id UNIQUE 已带索引
+CREATE INDEX IF NOT EXISTS idx_github_user_login ON github_user(login);
 
 COMMENT ON TABLE github_user IS 'GitHub 登录用户';
 COMMENT ON COLUMN github_user.id IS '主键';
@@ -164,8 +169,8 @@ CREATE TABLE IF NOT EXISTS comment (
     created_at      TIMESTAMP    DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_comment_post ON comment(post_id);
-CREATE INDEX IF NOT EXISTS idx_comment_status ON comment(status);
+CREATE INDEX IF NOT EXISTS idx_comment_post_status ON comment(post_id, status);
+CREATE INDEX IF NOT EXISTS idx_comment_parent_status_created ON comment(parent_id, status, created_at);
 CREATE INDEX IF NOT EXISTS idx_comment_github_user ON comment(github_user_id);
 
 COMMENT ON TABLE comment IS '文章评论（GitHub 登录）';
@@ -193,8 +198,7 @@ CREATE TABLE IF NOT EXISTS message (
     created_at      TIMESTAMP    DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_message_status ON message(status);
-CREATE INDEX IF NOT EXISTS idx_message_parent ON message(parent_id);
+CREATE INDEX IF NOT EXISTS idx_message_parent_status_created ON message(parent_id, status, created_at);
 CREATE INDEX IF NOT EXISTS idx_message_github_user ON message(github_user_id);
 
 COMMENT ON TABLE message IS '留言板/杂谈';
@@ -222,7 +226,7 @@ CREATE TABLE IF NOT EXISTS chatter (
     updated_at      TIMESTAMP    DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_chatter_status ON chatter(status);
+CREATE INDEX IF NOT EXISTS idx_chatter_status_created ON chatter(status, created_at);
 
 COMMENT ON TABLE chatter IS '说说/微语';
 COMMENT ON COLUMN chatter.id IS '主键';
@@ -250,8 +254,8 @@ CREATE TABLE IF NOT EXISTS chatter_comment (
     created_at      TIMESTAMP    DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_chatter_comment_chatter ON chatter_comment(chatter_id);
-CREATE INDEX IF NOT EXISTS idx_chatter_comment_status ON chatter_comment(status);
+CREATE INDEX IF NOT EXISTS idx_chatter_comment_chatter_status ON chatter_comment(chatter_id, status);
+CREATE INDEX IF NOT EXISTS idx_chatter_comment_parent_status_created ON chatter_comment(parent_id, status, created_at);
 CREATE INDEX IF NOT EXISTS idx_chatter_comment_github_user ON chatter_comment(github_user_id);
 
 COMMENT ON TABLE chatter_comment IS '说说评论（GitHub 登录）';
@@ -302,7 +306,7 @@ CREATE TABLE IF NOT EXISTS photo (
     created_at    TIMESTAMP    DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_photo_album ON photo(album_id);
+CREATE INDEX IF NOT EXISTS idx_photo_album_sort ON photo(album_id, sort);
 
 COMMENT ON TABLE photo IS '相册照片';
 COMMENT ON COLUMN photo.id IS '主键';
@@ -370,6 +374,8 @@ CREATE TABLE IF NOT EXISTS friend_link (
     updated_at    TIMESTAMP    DEFAULT NOW()
 );
 
+CREATE INDEX IF NOT EXISTS idx_friend_link_approved_sort ON friend_link(is_approved, sort);
+
 COMMENT ON TABLE friend_link IS '友情链接';
 COMMENT ON COLUMN friend_link.id IS '主键';
 COMMENT ON COLUMN friend_link.name IS '站点名称';
@@ -419,7 +425,7 @@ CREATE TABLE IF NOT EXISTS bookmark_site (
     updated_at    TIMESTAMP    DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_bookmark_site_category ON bookmark_site(category_id);
+CREATE INDEX IF NOT EXISTS idx_bookmark_site_category_sort ON bookmark_site(category_id, sort);
 
 COMMENT ON TABLE bookmark_site IS '收藏站点';
 COMMENT ON COLUMN bookmark_site.id IS '主键';
@@ -475,7 +481,7 @@ CREATE TABLE IF NOT EXISTS visitor (
 );
 
 CREATE INDEX IF NOT EXISTS idx_visitor_ip ON visitor(ip);
-CREATE INDEX IF NOT EXISTS idx_visitor_created ON visitor(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_visitor_created ON visitor(created_at);
 
 COMMENT ON TABLE visitor IS '访客记录';
 COMMENT ON COLUMN visitor.id IS '主键';

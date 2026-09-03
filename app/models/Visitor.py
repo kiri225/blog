@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import Optional
+from sqlalchemy import Index
 from sqlmodel import SQLModel, Field
 
 
@@ -11,7 +12,7 @@ class Visitor(SQLModel, table=True):
     # 主键，自增
     id: Optional[int] = Field(default=None, primary_key=True)
     # 访客 IP，IPv6 最长 45
-    ip: str = Field(max_length=45, index=True)
+    ip: str = Field(max_length=45)
     # 访问路径，来自 Header X-Path
     path: str = Field(default="", max_length=500)
     # 原始 User-Agent
@@ -41,4 +42,10 @@ class Visitor(SQLModel, table=True):
     # 设备类型：mobile / tablet / desktop，空则 ""
     device_type: str = Field(default="", max_length=20)
     # 访问时间
-    created_at: datetime = Field(default_factory=datetime.now, index=True)
+    created_at: datetime = Field(default_factory=datetime.now)
+
+    __table_args__ = (
+        Index("idx_visitor_ip", "ip"),
+        # 列表倒序、仪表盘近 30 天 WHERE created_at >= ?
+        Index("idx_visitor_created", "created_at"),
+    )
