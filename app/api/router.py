@@ -18,10 +18,12 @@ from app.api.SiteConfigRouter import router as site_config_router
 from app.api.BookmarkRouter import router as bookmarks_router
 from app.api.VisitorRouter import router as visitors_router
 from app.api.DashboardRouter import router as dashboard_router
+from app.api.GitHubMarkdownRouter import router as github_markdown_router
 from app.api.DeployRouter import router as deploy_router
 
 api_router.include_router(auth_router)
 api_router.include_router(github_auth_router)
+api_router.include_router(github_markdown_router)
 api_router.include_router(categories_router)
 api_router.include_router(tags_router)
 api_router.include_router(posts_router)
